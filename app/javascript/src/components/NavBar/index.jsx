@@ -9,7 +9,7 @@ const NavBar = () => {
   const location = useLocation();
 
   return (
-    <header className="bg-primary-white sticky top-0 z-20 w-full border-b border-gray-200 transition-all duration-500">
+    <header className="bg-primary-white sticky top-0 z-20 w-full border-b border-gray-200 bg-white transition-all duration-500">
       <div className="mx-auto max-w-6xl px-6">
         <div className="flex h-16 items-center justify-between">
           <div className="w-max flex-shrink-0">
