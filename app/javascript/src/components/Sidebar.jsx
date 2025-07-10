@@ -1,7 +1,7 @@
 import React from "react";
 
 const Sidebar = () => (
-  <div className="flex h-screen  w-[15%] flex-col items-center justify-between gap-4 border-r py-10 md:w-[5%]">
+  <div className="flex h-screen  w-[10%] flex-col items-center justify-between gap-4 border-r py-10 md:w-[5%]">
     <div className="flex flex-col items-center gap-6">
       <img
         alt="profile"
