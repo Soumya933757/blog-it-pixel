@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Input, Button } from "components/commons";
 import { useHistory } from "react-router-dom";
+import Select from "react-select";
+
+import categoriesApi from "../../apis/categories";
 
 const Form = ({
   type = "create",
@@ -11,8 +14,40 @@ const Form = ({
   handleSubmit,
   setDescription,
   description,
+  category,
+  setCategory,
 }) => {
+  const [categories, setCategories] = useState([]);
   const history = useHistory();
+
+  const fetchCategories = async () => {
+    try {
+      const {
+        data: { categories },
+      } = await categoriesApi.fetch();
+      setCategories(categories);
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const categoryOptions = categories.map(category => ({
+    value: category.id,
+    label: category.name,
+  }));
+
+  const selectedOptions = categoryOptions.filter(option =>
+    category.includes(option.value)
+  );
+
+  const handleCategoryChange = selectedOptions => {
+    const ids = selectedOptions.map(option => option.value);
+    setCategory(ids);
+  };
 
   return (
     <form
@@ -26,6 +61,19 @@ const Form = ({
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
+        <div className="flex flex-col">
+          <label className="mb-1 text-sm font-medium text-gray-800">
+            Categories
+          </label>
+          <Select
+            isMulti
+            className="text-sm"
+            classNamePrefix="react-select"
+            options={categoryOptions}
+            value={selectedOptions}
+            onChange={handleCategoryChange}
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Description

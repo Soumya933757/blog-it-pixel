@@ -9,6 +9,7 @@ const Create = ({ history }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState([]);
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -28,9 +29,11 @@ const Create = ({ history }) => {
       <div className="flex h-full flex-col gap-y-8">
         <PageTitle title="New blog post" />
         <Form
+          category={category}
           description={description}
           handleSubmit={handleSubmit}
           loading={loading}
+          setCategory={setCategory}
           setDescription={setDescription}
           setTitle={setTitle}
           title={title}

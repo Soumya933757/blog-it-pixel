@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 
 import { isNil, isEmpty, either } from "ramda";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import Card from "./Card";
 
 import postsApi from "../../apis/posts";
-import { Button, Container, PageLoader, PageTitle } from "../commons";
+import { PageLoader } from "../commons";
 
 const Dashboard = () => {
   const [posts, setPosts] = useState([]);
@@ -44,22 +44,14 @@ const Dashboard = () => {
 
   if (either(isNil, isEmpty)(posts)) {
     return (
-      <Container>
-        <h1 className="my-5 text-center text-xl leading-5">
-          You have not created or been assigned any posts 🥳
-        </h1>
-      </Container>
+      <h1 className="my-5 text-center text-xl leading-5">
+        You have not created or been assigned any posts 🥳
+      </h1>
     );
   }
 
   return (
-    <div className="flex w-full flex-col gap-y-8 ">
-      <div className="flex items-end justify-between">
-        <PageTitle title="Blog Posts" />
-        <Link to="/posts/create">
-          <Button buttonText="Add new blog post" />
-        </Link>
-      </div>
+    <div className="flex flex-col gap-4">
       {posts.map(post => (
         <Card key={post.id} post={post} showPost={showPost} />
       ))}
