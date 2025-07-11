@@ -9,4 +9,8 @@
   "files.trimFinalNewlines": true,
   "editor.formatOnSave": true,
   "yaml.format.enable": true,
+  "cSpell.words": [
+    "bigbinary",
+    "neetoui"
+  ],
 }

@@ -5,7 +5,7 @@ import postsApi from "apis/posts";
 import { Container, PageLoader } from "components/commons";
 import { useHistory, useParams } from "react-router-dom";
 
-import { ItemList } from "../commons";
+import ItemList from "../Category/ItemList";
 
 const Show = () => {
   const [post, setPost] = useState([]);
