@@ -38,6 +38,7 @@ const Category = () => {
       await categoriesApi.create({ category: { name: categoryTitle } });
       fetchCategories();
       setShowCreateCategoryModal(false);
+      setCategoryTitle("");
     } catch (error) {
       logger.error(error);
     }
@@ -51,27 +52,32 @@ const Category = () => {
     : categories;
 
   return (
-    <div className="flex w-3/6 flex-col items-center gap-4 bg-gray-200 px-4 py-5 shadow-md md:w-3/12">
-      <div className="flex w-full items-center justify-between">
-        <Typography style="h4">CATEGORIES</Typography>
-        <div className="flex">
-          <Search color="gray" onClick={() => setShowInputBar(prev => !prev)} />
-          <Plus
-            color="gray"
-            onClick={() => setShowCreateCategoryModal(prev => !prev)}
-          />
+    <div className="relative flex h-screen w-3/6 flex-col items-center gap-4 bg-gray-200 px-4 py-5 shadow-md md:w-3/12">
+      <div className="flex w-full flex-col ">
+        <div className="flex w-full items-center justify-between">
+          <Typography style="h4">CATEGORIES</Typography>
+          <div className="flex">
+            <Search
+              color="gray"
+              onClick={() => setShowInputBar(prev => !prev)}
+            />
+            <Plus
+              color="gray"
+              onClick={() => setShowCreateCategoryModal(prev => !prev)}
+            />
+          </div>
+        </div>
+        <div className="w-full">
+          {showInputBar && (
+            <Input
+              placeholder="Search Categories..."
+              value={searchValue}
+              onChange={event => setSearchValue(event.target.value)}
+            />
+          )}
         </div>
       </div>
-      <div className="w-full">
-        {showInputBar && (
-          <Input
-            placeholder="Search Categories..."
-            value={searchValue}
-            onChange={event => setSearchValue(event.target.value)}
-          />
-        )}
-      </div>
-      <div className="flex w-full flex-col gap-4">
+      <div className="categoryList flex w-full flex-col gap-4 overflow-y-scroll">
         {searchedCategories?.map(category => (
           <div
             key={category.id}
