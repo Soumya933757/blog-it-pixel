@@ -6,12 +6,15 @@ import { useHistory } from "react-router-dom";
 import Card from "./Card";
 
 import postsApi from "../../apis/posts";
+import useCategoryItemStore from "../../stores/useCategoryItemStore";
 import { PageLoader } from "../commons";
 
 const Dashboard = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const history = useHistory();
+
+  const { selectedCategories } = useCategoryItemStore();
 
   const fetchPosts = async () => {
     try {
@@ -50,9 +53,17 @@ const Dashboard = () => {
     );
   }
 
+  const filteredPosts = !isEmpty(selectedCategories)
+    ? posts.filter(post =>
+        post.categories?.some(category =>
+          selectedCategories.includes(category.id)
+        )
+      )
+    : posts;
+
   return (
     <div className="flex flex-col gap-4">
-      {posts.map(post => (
+      {filteredPosts?.map(post => (
         <Card key={post.id} post={post} showPost={showPost} />
       ))}
     </div>

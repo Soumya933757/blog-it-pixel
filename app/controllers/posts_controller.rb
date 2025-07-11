@@ -23,8 +23,18 @@ end
    end
 
   def show
-    post = Post.find_by!(slug: params[:slug])
-    render_json({ post: post })
+    post = Post.includes(:user, :organization, :categories).find_by!(slug: params[:slug])
+
+    render status: :ok, json: {
+      post: post.as_json(
+        include: {
+          user: { only: [:id, :name] },
+          organization: { only: [:id, :name] },
+          categories: { only: [:id, :name] }
+        },
+        except: [:user_id, :organization_id]
+      )
+    }
   end
 
   private
