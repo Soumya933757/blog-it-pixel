@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user_using_x_auth_token
-
   protect_from_forgery
+  before_action :authenticate_user_using_x_auth_token
 
   rescue_from StandardError, with: :handle_api_exception
 

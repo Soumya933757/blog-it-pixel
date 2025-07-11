@@ -21,7 +21,6 @@ const App = () => {
     <Router>
       <ToastContainer />
       <Switch>
-        <Route exact component={Dashboard} path="/" />
         <Route exact component={Create} path="/posts/create" />
         <Route exact component={Show} path="/posts/:slug/show" />
         <Route exact component={Signup} path="/signup" />

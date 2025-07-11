@@ -15,7 +15,9 @@ const Create = ({ history }) => {
     event.preventDefault();
     setLoading(true);
     try {
-      await postsApi.create({ post: { title, description } });
+      await postsApi.create({
+        post: { title, description, category_ids: category },
+      });
       setLoading(false);
       history.push("/");
     } catch (error) {

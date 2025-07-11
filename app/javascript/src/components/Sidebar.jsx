@@ -1,13 +1,39 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import { Edit, List, ListDetails } from "@bigbinary/neeto-icons";
+import { Popover, Typography } from "@bigbinary/neetoui";
 import { Link, useLocation } from "react-router-dom";
+
+import authApi from "../apis/auth";
+import { resetAuthTokens } from "../apis/axios";
+import { getFromLocalStorage, setToLocalStorage } from "../utils/storage";
 
 const Sidebar = ({ setShowCategories }) => {
   const location = useLocation();
 
+  const profileRef = useRef(null);
+
+  const userName = getFromLocalStorage("authUserName");
+  const userEmail = getFromLocalStorage("authEmail");
+
   const showCategoryList = () => {
     if (location.pathname === "/") setShowCategories(prev => !prev);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+      setToLocalStorage({
+        authToken: null,
+        email: null,
+        userId: null,
+        userName: null,
+      });
+      resetAuthTokens();
+      window.location.href = "/";
+    } catch (error) {
+      logger.error(error);
+    }
   };
 
   return (
@@ -29,11 +55,30 @@ const Sidebar = ({ setShowCategories }) => {
           onClick={showCategoryList}
         />
       </div>
-      <img
-        alt="profile"
-        className="h-8 w-8 rounded-full border "
-        src="https://img.icons8.com/?size=100&id=7819&format=png&color=000000"
-      />
+      <div className="relative">
+        <img
+          alt="profile"
+          className="h-8 w-8 rounded-full border "
+          ref={profileRef}
+          src="https://img.icons8.com/?size=100&id=7819&format=png&color=000000"
+        />
+        <Popover className="w-52" position="right" reference={profileRef}>
+          <div className="flex w-full flex-col ">
+            <div className="border-b py-1">
+              <Typography>{userName}</Typography>
+              <Typography>{userEmail}</Typography>
+            </div>
+            <div className="flex items-center gap-2 py-1">
+              <div
+                className="cursor-pointer text-[15px] font-semibold"
+                onClick={handleLogout}
+              >
+                Logout
+              </div>
+            </div>
+          </div>
+        </Popover>
+      </div>
     </div>
   );
 };
