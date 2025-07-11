@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   # root "posts#index"
   resources :posts, only: %i[index create show], param: :slug
   resources :categories, only: %i[index create]
+  resources :users, only: %i[index create]
+  resources :organizations, only: %i[index]
 
   root "home#index"
   get "*path", to: "home#index", via: :all
