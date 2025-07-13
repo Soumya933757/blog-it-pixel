@@ -11,7 +11,8 @@ const Card = ({ post, showPost }) => (
       style="h2"
       onClick={() => showPost(post.slug)}
     >
-      {post.title}
+      {post.title.slice(0, 50)}
+      {post.title.length > 50 ? "..." : ""}
     </Typography>
     <div className="flex gap-1">
       {post?.categories.map(category => (

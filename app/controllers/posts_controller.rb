@@ -40,9 +40,21 @@ end
     }
   end
 
+  def update
+    post = Post.find_by!(slug: params[:slug])
+    post.update!(post_params)
+    render_notice(t("successfully_updated"))
+  end
+
+  def destroy
+    post = Post.find_by!(slug: params[:slug])
+    post.destroy!
+    render_json
+  end
+
   private
 
     def post_params
-      params.require(:post).permit(:title, :description, category_ids: [])
+      params.require(:post).permit(:title, :description, :status, category_ids: [])
     end
 end

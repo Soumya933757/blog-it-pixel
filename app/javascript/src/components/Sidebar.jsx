@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-import { Edit, List, ListDetails } from "@bigbinary/neeto-icons";
+import { Edit, Folder, List, ListDetails } from "@bigbinary/neeto-icons";
 import { Popover, Typography } from "@bigbinary/neetoui";
 import { Link, useLocation } from "react-router-dom";
 
@@ -54,6 +54,9 @@ const Sidebar = ({ setShowCategories }) => {
           className="h-6 w-6 cursor-pointer"
           onClick={showCategoryList}
         />
+        <Link to="/my-blogs">
+          <Folder className="h-6 w-6 cursor-pointer" />
+        </Link>
       </div>
       <div className="relative">
         <img

@@ -1,22 +1,24 @@
 import React, { useState } from "react";
 
 import postsApi from "apis/posts";
-import { Container, PageTitle } from "components/commons";
+import { Container } from "components/commons";
 
 import Form from "./Form";
+import Header from "./Header";
 
 const Create = ({ history }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState([]);
+  const [status, setStatus] = useState("Pending");
 
   const handleSubmit = async event => {
     event.preventDefault();
     setLoading(true);
     try {
       await postsApi.create({
-        post: { title, description, category_ids: category },
+        post: { title, description, category_ids: category, status },
       });
       setLoading(false);
       history.push("/");
@@ -29,7 +31,7 @@ const Create = ({ history }) => {
   return (
     <Container className="max-h-screen w-full">
       <div className="flex h-full flex-col gap-y-8">
-        <PageTitle title="New blog post" />
+        <Header setStatus={setStatus} status={status} type="create" />
         <Form
           category={category}
           description={description}

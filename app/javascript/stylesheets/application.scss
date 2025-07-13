@@ -5,3 +5,24 @@
 @tailwind utilities;
 @import url("https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css");
 @import "react-toastify/dist/ReactToastify.min.css";
+
+.blog-list{
+  scrollbar-width: none;
+}
+.categoryList{
+  scrollbar-width: none;
+}
+.neetix-button--primary {
+  background-color: black;
+}
+.neetix-button--primary:hover{
+  background-color: #333 !important;
+}
+tbody tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+

@@ -48,7 +48,7 @@ const Dashboard = () => {
   if (either(isNil, isEmpty)(posts)) {
     return (
       <h1 className="my-5 text-center text-xl leading-5">
-        You have not created or been assigned any posts 🥳
+        No Posts to show 🥳
       </h1>
     );
   }
@@ -63,9 +63,11 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {filteredPosts?.map(post => (
-        <Card key={post.id} post={post} showPost={showPost} />
-      ))}
+      {filteredPosts
+        ?.filter(post => post.status === "Published")
+        .map(post => (
+          <Card key={post.id} post={post} showPost={showPost} />
+        ))}
     </div>
   );
 };
