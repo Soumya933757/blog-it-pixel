@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Button, Input } from "components/commons";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 
-import organizationsApi from "../../../apis/organizations";
+import { useFetchOrganizations } from "../../../hooks/reactQuery/organizatonsApi";
 
 const Signup = ({
   handleSubmit,
@@ -15,22 +15,8 @@ const Signup = ({
   setPasswordConfirmation,
   setOrganization,
 }) => {
-  const [organizations, setOrganizations] = useState([]);
-
-  const fetchOrganizations = async () => {
-    try {
-      const {
-        data: { organizations },
-      } = await organizationsApi.fetch();
-      setOrganizations(organizations);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchOrganizations();
-  }, []);
+  const { data } = useFetchOrganizations();
+  const organizations = data?.organizations || [];
 
   const organizationOptions = organizations.map(organization => ({
     value: organization.id,

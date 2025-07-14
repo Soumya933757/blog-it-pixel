@@ -1,43 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { isNil, isEmpty, either } from "ramda";
 import { useHistory } from "react-router-dom";
 
 import Card from "./Card";
 
-import postsApi from "../../apis/posts";
+import { useFetchPosts } from "../../hooks/reactQuery/postsApi";
 import useCategoryItemStore from "../../stores/useCategoryItemStore";
 import { PageLoader } from "../commons";
 
 const Dashboard = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const history = useHistory();
 
   const { selectedCategories } = useCategoryItemStore();
 
-  const fetchPosts = async () => {
-    try {
-      const {
-        data: { posts },
-      } = await postsApi.fetch();
-      setPosts(posts);
-      setLoading(false);
-    } catch (error) {
-      logger.error(error);
-      setLoading(false);
-    }
-  };
+  const { data, isFetching } = useFetchPosts();
+  const posts = data?.posts || [];
 
   const showPost = slug => {
     history.push(`/posts/${slug}/show`);
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  if (loading) {
+  if (isFetching) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />

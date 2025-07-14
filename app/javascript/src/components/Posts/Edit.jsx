@@ -6,57 +6,59 @@ import { useParams } from "react-router-dom";
 import Form from "./Form";
 import Header from "./Header";
 
-import postsApi from "../../apis/posts";
+import { useShowPost, useUpdatePost } from "../../hooks/reactQuery/postsApi";
 
 const Edit = ({ history }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [pageLoading, setPageLoading] = useState(true);
   const [updatedTime, setUpdatedTime] = useState("");
   const [status, setStatus] = useState("Draft");
   const { slug } = useParams();
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-    try {
-      await postsApi.update({
-        slug,
-        payload: { title, description, category_ids: category, status },
-      });
-      setLoading(false);
-      history.push("/");
-    } catch (error) {
-      setLoading(false);
-      logger.error(error);
-    }
-  };
-
-  const fetchPostDetails = async () => {
-    try {
-      const {
-        data: {
-          post: { title, description, categories, status, updated_at },
-        },
-      } = await postsApi.show(slug);
-      setTitle(title);
-      setDescription(description);
-      setCategory(categories?.map(category => category.id));
-      setStatus(status === "Pending" ? "Draft" : status);
-      setUpdatedTime(updated_at);
-    } catch (error) {
-      logger.error(error);
-    } finally {
-      setPageLoading(false);
-    }
-  };
-
+  const { data, isFetching } = useShowPost(slug);
   useEffect(() => {
-    fetchPostDetails();
-  }, []);
+    if (data) {
+      const post = data.post;
+      setTitle(post.title);
+      setDescription(post.description);
+      setCategory(post.categories?.map(category => category.id));
+      setStatus(post.status === "Pending" ? "Draft" : post.status);
+      setUpdatedTime(post.updated_at);
+    }
+  }, [data]);
 
-  if (pageLoading) {
+  const { mutate: updatePost } = useUpdatePost();
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    setLoading(true);
+
+    updatePost(
+      {
+        slug,
+        payload: {
+          title,
+          description,
+          category_ids: category,
+          status,
+        },
+      },
+      {
+        onSuccess: () => {
+          setLoading(false);
+          history.push("/");
+        },
+        onError: error => {
+          setLoading(false);
+          logger.error(error);
+        },
+      }
+    );
+  };
+
+  if (isFetching) {
     return (
       <div className="h-screen w-screen">
         <PageLoader />
@@ -68,6 +70,8 @@ const Edit = ({ history }) => {
     <Container className="max-h-screen w-full">
       <div className="flex h-full flex-col gap-y-8">
         <Header
+          handleSubmit={handleSubmit}
+          loading={loading}
           setStatus={setStatus}
           status={status}
           type="edit"
@@ -76,13 +80,10 @@ const Edit = ({ history }) => {
         <Form
           category={category}
           description={description}
-          handleSubmit={handleSubmit}
-          loading={loading}
           setCategory={setCategory}
           setDescription={setDescription}
           setTitle={setTitle}
           title={title}
-          type="update"
         />
       </div>
     </Container>

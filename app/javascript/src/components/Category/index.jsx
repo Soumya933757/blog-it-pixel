@@ -1,48 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Plus, Search } from "@bigbinary/neeto-icons";
 import { Modal, Typography } from "@bigbinary/neetoui";
 import classnames from "classnames";
 import { isEmpty } from "ramda";
 
-import categoriesApi from "../../apis/categories";
+import {
+  useCreateCategory,
+  useFetchCategories,
+} from "../../hooks/reactQuery/categoriesApi";
 import useDebounce from "../../hooks/useDebounce";
 import useCategoryItemStore from "../../stores/useCategoryItemStore";
 import { Button, Input } from "../commons";
 
 const Category = () => {
-  const [categories, setCategories] = useState([]);
   const [showCreateCategoryModal, setShowCreateCategoryModal] = useState(false);
   const [categoryTitle, setCategoryTitle] = useState("");
   const [showInputBar, setShowInputBar] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const { selectedCategories, toggleCategory } = useCategoryItemStore();
 
-  const fetchCategories = async () => {
-    try {
-      const {
-        data: { categories },
-      } = await categoriesApi.fetch();
-      setCategories(categories);
-    } catch (error) {
-      logger.error(error);
-    }
+  const { mutate: createCategory } = useCreateCategory();
+  const { data } = useFetchCategories();
+  const categories = data?.categories || [];
+
+  const createCategoryHandler = () => {
+    createCategory({ category: { name: categoryTitle } });
+    setShowCreateCategoryModal(false);
+    setCategoryTitle("");
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const createCategory = async () => {
-    try {
-      await categoriesApi.create({ category: { name: categoryTitle } });
-      fetchCategories();
-      setShowCreateCategoryModal(false);
-      setCategoryTitle("");
-    } catch (error) {
-      logger.error(error);
-    }
-  };
   const debouncedSearchValue = useDebounce(searchValue);
 
   const searchedCategories = !isEmpty(debouncedSearchValue)
@@ -107,7 +94,7 @@ const Category = () => {
           onChange={event => setCategoryTitle(event.target.value)}
         />
         <div className="flex gap-4 ">
-          <Button buttonText="Add" onClick={createCategory} />
+          <Button buttonText="Add" onClick={createCategoryHandler} />
           <Button
             buttonText="Cancel"
             style="secondary"

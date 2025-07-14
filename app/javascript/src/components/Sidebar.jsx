@@ -4,8 +4,8 @@ import { Edit, Folder, List, ListDetails } from "@bigbinary/neeto-icons";
 import { Popover, Typography } from "@bigbinary/neetoui";
 import { Link, useLocation } from "react-router-dom";
 
-import authApi from "../apis/auth";
 import { resetAuthTokens } from "../apis/axios";
+import { useLogout } from "../hooks/reactQuery/authApi";
 import { getFromLocalStorage, setToLocalStorage } from "../utils/storage";
 
 const Sidebar = ({ setShowCategories }) => {
@@ -20,20 +20,24 @@ const Sidebar = ({ setShowCategories }) => {
     if (location.pathname === "/") setShowCategories(prev => !prev);
   };
 
-  const handleLogout = async () => {
-    try {
-      await authApi.logout();
-      setToLocalStorage({
-        authToken: null,
-        email: null,
-        userId: null,
-        userName: null,
-      });
-      resetAuthTokens();
-      window.location.href = "/";
-    } catch (error) {
-      logger.error(error);
-    }
+  const { mutate: logout } = useLogout();
+
+  const handleLogout = () => {
+    logout(null, {
+      onSuccess: () => {
+        setToLocalStorage({
+          authToken: null,
+          email: null,
+          userId: null,
+          userName: null,
+        });
+        resetAuthTokens();
+        window.location.href = "/";
+      },
+      onError: error => {
+        logger.error(error);
+      },
+    });
   };
 
   return (

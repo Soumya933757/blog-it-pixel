@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-import authApi from "apis/auth";
 import SignupForm from "components/Authentication/Form/Signup";
+
+import { useSignup } from "../../hooks/reactQuery/authApi";
 
 const Signup = ({ history }) => {
   const [name, setName] = useState("");
@@ -9,31 +10,35 @@ const Signup = ({ history }) => {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [organization, setOrganization] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async event => {
+  const { mutate: signup, isLoading } = useSignup();
+
+  const handleSubmit = event => {
     event.preventDefault();
-    setLoading(true);
-    try {
-      await authApi.signup({
+
+    signup(
+      {
         name,
         email,
         password,
         password_confirmation: passwordConfirmation,
         organization_id: organization,
-      });
-      setLoading(false);
-      history.push("/");
-    } catch (error) {
-      logger.error(error);
-      setLoading(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          history.push("/");
+        },
+        onError: error => {
+          logger.error(error);
+        },
+      }
+    );
   };
 
   return (
     <SignupForm
       handleSubmit={handleSubmit}
-      loading={loading}
+      loading={isLoading}
       setEmail={setEmail}
       setName={setName}
       setOrganization={setOrganization}

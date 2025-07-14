@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Edit } from "@bigbinary/neeto-icons";
 import { Tooltip, Typography } from "@bigbinary/neetoui";
-import postsApi from "apis/posts";
 import { Container, PageLoader } from "components/commons";
 import { useHistory, useParams } from "react-router-dom";
 
+import { useShowPost } from "../../hooks/reactQuery/postsApi";
 import ItemList from "../Category/ItemList";
 
 const Show = () => {
-  const [post, setPost] = useState([]);
-  const [pageLoading, setPageLoading] = useState(true);
   const { slug } = useParams();
   const history = useHistory();
 
@@ -18,24 +16,10 @@ const Show = () => {
     history.push(`/posts/${post.slug}/edit`);
   };
 
-  const fetchPostDetails = async () => {
-    try {
-      const {
-        data: { post },
-      } = await postsApi.show(slug);
-      setPost(post);
-      setPageLoading(false);
-    } catch (error) {
-      logger.error(error);
-      history.push("/");
-    }
-  };
+  const { data, isFetching } = useShowPost(slug);
+  const post = data?.post || {};
 
-  useEffect(() => {
-    fetchPostDetails();
-  }, []);
-
-  if (pageLoading) {
+  if (isFetching) {
     return <PageLoader />;
   }
 

@@ -4,7 +4,7 @@ import { Checkbox } from "@bigbinary/neetoui";
 
 import Row from "./Row";
 
-const Table = ({ blogs, fetchPosts }) => (
+const Table = ({ blogs }) => (
   <table className="">
     <thead>
       <tr className="bg-gray-100 text-left">
@@ -20,7 +20,7 @@ const Table = ({ blogs, fetchPosts }) => (
     </thead>
     <tbody>
       {blogs.map(blog => (
-        <Row blog={blog} fetchPosts={fetchPosts} key={blog.id} />
+        <Row blog={blog} key={blog.id} />
       ))}
     </tbody>
   </table>

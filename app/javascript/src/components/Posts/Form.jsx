@@ -1,39 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { Input, Button } from "components/commons";
-import { useHistory } from "react-router-dom";
+import { Input } from "components/commons";
 import Select from "react-select";
 
-import categoriesApi from "../../apis/categories";
+import { useFetchCategories } from "../../hooks/reactQuery/categoriesApi";
 
 const Form = ({
-  type = "create",
   title,
   setTitle,
-  loading,
-  handleSubmit,
   setDescription,
   description,
   category,
   setCategory,
 }) => {
-  const [categories, setCategories] = useState([]);
-  const history = useHistory();
-
-  const fetchCategories = async () => {
-    try {
-      const {
-        data: { categories },
-      } = await categoriesApi.fetch();
-      setCategories(categories);
-    } catch (error) {
-      logger.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const { data } = useFetchCategories();
+  const categories = data?.categories || [];
 
   const categoryOptions = categories.map(category => ({
     value: category.id,
@@ -50,10 +31,7 @@ const Form = ({
   };
 
   return (
-    <form
-      className="mb-4 flex h-3/4 w-full flex-col justify-between rounded-md border p-5 shadow-md"
-      onSubmit={handleSubmit}
-    >
+    <form className="mb-4 flex h-3/4 w-full flex-col justify-between rounded-md border p-5 shadow-md">
       <div className="flex flex-col gap-6">
         <Input
           label="Title"
@@ -86,18 +64,6 @@ const Form = ({
             onChange={e => setDescription(e.target.value)}
           />
         </div>
-      </div>
-      <div className="flex gap-4 self-end">
-        <Button
-          buttonText="Cancel"
-          style="secondary"
-          onClick={() => history.push("/")}
-        />
-        <Button
-          buttonText={type === "create" ? "Submit" : "Update Post"}
-          loading={loading}
-          type="submit"
-        />
       </div>
     </form>
   );

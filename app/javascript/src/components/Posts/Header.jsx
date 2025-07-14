@@ -1,13 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { Check } from "@bigbinary/neeto-icons";
+import { Check, ExternalLink } from "@bigbinary/neeto-icons";
 import { Button, ActionDropdown } from "@bigbinary/neetoui";
 import { Link, useParams, useHistory } from "react-router-dom";
 
-import postsApi from "../../apis/posts";
+import { useDeletePost } from "../../hooks/reactQuery/postsApi";
 import { PageTitle } from "../commons";
 
-const Header = ({ type, status, setStatus, updatedTime = "" }) => {
+const Header = ({
+  type,
+  status,
+  setStatus,
+  updatedTime = "",
+  handleSubmit,
+  loading,
+}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const menuRef = useRef();
   const { slug } = useParams();
@@ -16,6 +23,12 @@ const Header = ({ type, status, setStatus, updatedTime = "" }) => {
     Menu,
     MenuItem: { Button: MenuButton },
   } = ActionDropdown;
+  const { mutate: deletePost } = useDeletePost();
+
+  const deleteHandler = () => {
+    deletePost(slug);
+    history.push("/");
+  };
 
   useEffect(() => {
     const handleClickOutside = event => {
@@ -31,38 +44,36 @@ const Header = ({ type, status, setStatus, updatedTime = "" }) => {
     };
   }, [menuRef]);
 
-  const destroyPost = async () => {
-    try {
-      await postsApi.destroy(slug);
-      history.push("/");
-    } catch (error) {
-      logger.error(error);
-    }
-  };
-
   return (
     <div className="flex items-end justify-between">
       <PageTitle
         title={type === "create" ? "New blog post" : "Edit blog post"}
       />
       <div className="flex items-center gap-3 text-xs">
-        <span>
-          {status === "Draft" ? "Draft saved at " : "Published on "}
-          {updatedTime &&
-            new Date(updatedTime).toLocaleString("en-US", {
-              hour: "numeric",
-              minute: "2-digit",
-              hour12: true,
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-            })}
-        </span>
+        {type === "edit" && (
+          <span>
+            {status === "Draft" ? "Draft saved at " : "Published on "}
+            {updatedTime &&
+              new Date(updatedTime).toLocaleString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+              })}
+          </span>
+        )}
+        <ExternalLink
+          className="cursor-pointer"
+          onClick={() => history.push(`/posts/${slug}/show`)}
+        />
         <Link to="/">
           <Button className="bg-gray-200" label="Cancel" style="Secondary" />
         </Link>
         <ActionDropdown
           className="neetix-actiondropdown"
+          disabled={loading}
           label={status === "Draft" ? "Save as draft" : "Publish"}
           buttonProps={{
             className: "neetix-button--primary",
@@ -72,6 +83,7 @@ const Header = ({ type, status, setStatus, updatedTime = "" }) => {
               className: "neetix-button--primary",
             },
           }}
+          onClick={handleSubmit}
         >
           <Menu>
             <MenuButton onClick={() => setStatus("Draft")}>
@@ -99,7 +111,7 @@ const Header = ({ type, status, setStatus, updatedTime = "" }) => {
               <div className="absolute right-0 z-20 mt-2 w-48 rounded-md border border-gray-300 bg-white py-1 shadow-xl">
                 <Link
                   className="block cursor-pointer px-3 py-1.5 text-sm text-red-500 hover:bg-gray-100"
-                  onClick={destroyPost}
+                  onClick={deleteHandler}
                 >
                   Delete
                 </Link>
