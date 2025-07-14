@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Typography } from "antd";
 import { isNil, isEmpty, either } from "ramda";
 import { useHistory } from "react-router-dom";
 
@@ -31,9 +32,11 @@ const Dashboard = () => {
 
   if (either(isNil, isEmpty)(posts)) {
     return (
-      <h1 className="my-5 text-center text-xl leading-5">
-        No Posts to show 🥳
-      </h1>
+      <div className="flex h-[80vh] items-center justify-center">
+        <Typography className="my-5 text-center text-xl leading-5 ">
+          No Posts to show 🥳
+        </Typography>
+      </div>
     );
   }
 

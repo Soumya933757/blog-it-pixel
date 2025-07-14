@@ -65,10 +65,12 @@ const Header = ({
               })}
           </span>
         )}
-        <ExternalLink
-          className="cursor-pointer"
-          onClick={() => history.push(`/posts/${slug}/show`)}
-        />
+        {type === "edit" && (
+          <ExternalLink
+            className="cursor-pointer"
+            onClick={() => history.push(`/posts/${slug}/show`)}
+          />
+        )}
         <Link to="/">
           <Button className="bg-gray-200" label="Cancel" style="Secondary" />
         </Link>

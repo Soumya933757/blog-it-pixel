@@ -6,11 +6,13 @@ import { Container, PageLoader } from "components/commons";
 import { useHistory, useParams } from "react-router-dom";
 
 import { useShowPost } from "../../hooks/reactQuery/postsApi";
+import { getFromLocalStorage } from "../../utils/storage";
 import ItemList from "../Category/ItemList";
 
 const Show = () => {
   const { slug } = useParams();
   const history = useHistory();
+  const authUserId = getFromLocalStorage("authUserId");
 
   const updatePost = () => {
     history.push(`/posts/${post.slug}/edit`);
@@ -46,11 +48,13 @@ const Show = () => {
                   )}
                 </div>
               </div>
-              <Tooltip content="Edit" position="top">
-                <div>
-                  <Edit onClick={updatePost} />
-                </div>
-              </Tooltip>
+              {post.user.id === authUserId && (
+                <Tooltip content="Edit" position="top">
+                  <div>
+                    <Edit onClick={updatePost} />
+                  </div>
+                </Tooltip>
+              )}
             </div>
             <div>
               <Typography className="text-xs font-bold text-slate-500">
@@ -64,7 +68,9 @@ const Show = () => {
                 })}
               </Typography>
             </div>
-            <pre className="whitespace-break-spaces">{post?.description}</pre>
+            <pre className="whitespace-break-spaces font-sans">
+              {post?.description}
+            </pre>
           </div>
         </div>
       </div>

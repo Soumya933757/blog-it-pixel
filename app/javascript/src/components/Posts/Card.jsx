@@ -7,7 +7,7 @@ import ItemList from "../Category/ItemList";
 const Card = ({ post, showPost }) => (
   <div className="flex w-full flex-col gap-2 border-b p-2">
     <Typography
-      className="text-xl font-bold"
+      className="cursor-pointer text-xl font-bold"
       style="h2"
       onClick={() => showPost(post.slug)}
     >

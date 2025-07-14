@@ -21,12 +21,14 @@ end
     post.user = current_user
     post.organization = current_user.organization
     post.category_ids = post_params[:category_ids] if post_params[:category_ids]
+    authorize post
     post.save!
     render_notice(t("successfully_created", entity: "Post"))
   end
 
   def show
     post = Post.includes(:user, :organization, :categories).find_by!(slug: params[:slug])
+    authorize post
 
     render status: :ok, json: {
       post: post.as_json(
@@ -42,12 +44,14 @@ end
 
   def update
     post = Post.find_by!(slug: params[:slug])
+    authorize post
     post.update!(post_params)
     render_notice(t("successfully_updated"))
   end
 
   def destroy
     post = Post.find_by!(slug: params[:slug])
+    authorize post
     post.destroy!
     render_json
   end
