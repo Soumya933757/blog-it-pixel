@@ -14,6 +14,7 @@ const Header = ({
   updatedTime = "",
   handleSubmit,
   loading,
+  showStatus,
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const menuRef = useRef();
@@ -52,7 +53,7 @@ const Header = ({
       <div className="flex items-center gap-3 text-xs">
         {type === "edit" && (
           <span>
-            {status === "Draft" ? "Draft saved at " : "Published on "}
+            {showStatus === "Draft" ? "Draft saved at " : "Published on "}
             {updatedTime &&
               new Date(updatedTime).toLocaleString("en-US", {
                 hour: "numeric",

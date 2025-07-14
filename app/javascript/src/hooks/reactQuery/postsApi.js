@@ -31,8 +31,9 @@ export const useUpdatePost = () => {
 
   return useMutation({
     mutationFn: ({ slug, payload }) => postsApi.update({ slug, payload }),
-    onSuccess: ({ slug }) => {
-      queryClient.invalidateQueries([QUERY_KEYS.POSTS, slug]);
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEYS.POSTS]);
+      queryClient.invalidateQueries([QUERY_KEYS.POST]);
     },
   });
 };

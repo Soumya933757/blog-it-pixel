@@ -71,7 +71,10 @@ const Row = ({ blog }) => {
       <td className="px-2 py-2">
         <Checkbox />
       </td>
-      <td className="px-2 py-2 text-emerald-500" onClick={redirectToEdit}>
+      <td
+        className="cursor-pointer px-2 py-2 text-emerald-500"
+        onClick={redirectToEdit}
+      >
         {title.slice(0, 30)} {title.length > 50 ? "..." : ""}
       </td>
       <td className="px-2 py-2">

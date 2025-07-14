@@ -15,6 +15,7 @@ const Edit = ({ history }) => {
   const [loading, setLoading] = useState(false);
   const [updatedTime, setUpdatedTime] = useState("");
   const [status, setStatus] = useState("Draft");
+  const [showStatus, setShowStatus] = useState("");
   const { slug } = useParams();
 
   const { data, isFetching } = useShowPost(slug);
@@ -24,8 +25,9 @@ const Edit = ({ history }) => {
       setTitle(post.title);
       setDescription(post.description);
       setCategory(post.categories?.map(category => category.id));
-      setStatus(post.status === "Pending" ? "Draft" : post.status);
+      setStatus(post.status);
       setUpdatedTime(post.updated_at);
+      setShowStatus(post.status);
     }
   }, [data]);
 
@@ -73,6 +75,7 @@ const Edit = ({ history }) => {
           handleSubmit={handleSubmit}
           loading={loading}
           setStatus={setStatus}
+          showStatus={showStatus}
           status={status}
           type="edit"
           updatedTime={updatedTime}
